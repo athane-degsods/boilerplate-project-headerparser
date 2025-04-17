@@ -6,6 +6,9 @@ require('dotenv').config();
 var express = require('express');
 var app = express();
 
+// trust proxy to get the real IP address of the client
+app.set('trust proxy', true);
+
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC
 var cors = require('cors');
@@ -23,6 +26,20 @@ app.get('/', function (req, res) {
 app.get('/api/hello', function (req, res) {
   res.json({ greeting: 'hello API' });
 });
+
+// API endpoint to get IP address, language, and software
+app.get('/api/whoami', function (req, res) {
+  const ipAddress = req.ip;
+  const language = req.headers['accept-language'];
+  const software = req.headers['user-agent'];
+
+  res.json({
+    ipaddress: ipAddress,
+    language: language,
+    software: software,
+  });
+});
+
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT || 3000, function () {
